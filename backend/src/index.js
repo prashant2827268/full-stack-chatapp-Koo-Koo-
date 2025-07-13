@@ -13,6 +13,8 @@ dotenv.config();
 const app = express();
 const PORT =    process.env.PORT || 5002
 const __dirname = path.resolve();
+console.log(__dirname)
+console.log("hf")
 const server = http.createServer(app);
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
@@ -24,7 +26,6 @@ app.use(
 );
 
 socketConnection(server);
-console.log(socketConnection)
 app.use('/api/auth',authRoutes);
 app.use('/api/messages', messageRoutes);
 
@@ -32,11 +33,10 @@ if(process.env.NODE_ENV === "production")
 {
   app.use(express.static(path.join(__dirname,'../frontend/dist')))
 
-  app.get('*',(req,res) => {
-    res.sendFile(path.join(__dirname, '../frontend', "dist" , "index.html"));
-  })
+  app.get(/^\/(?!api).*/, (req, res) => {
+    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+  });
 }
-
 
 server.listen(PORT,()=>{
     console.log("Server is listening on : ", PORT);
